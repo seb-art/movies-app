@@ -5,7 +5,7 @@ import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
-import _ from 'lodash';
+import _ from "lodash";
 
 class Movies extends Component {
   state = {
@@ -13,10 +13,10 @@ class Movies extends Component {
     currentPage: 1,
     pageSize: 4,
     genres: [],
-    sortColumn: { path: 'title', order: 'asc'}
+    sortColumn: { path: "title", order: "asc" },
   };
   componentDidMount() {
-    const genres = [{ _id: "",name: "All Genres" }, ...getGenres()];
+    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
     this.setState({ movies: getMovies(), genres });
   }
 
@@ -38,12 +38,11 @@ class Movies extends Component {
   handleGenreSelect = (genre) => {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
-  handleSort = sortColumn => {
-    this.setState({ sortColumn })
-  }
+  handleSort = (sortColumn) => {
+    this.setState({ sortColumn });
+  };
 
-  render() {
-    const { length: count } = this.state.movies;
+  getPagedData = () => {
     const {
       pageSize,
       currentPage,
@@ -51,9 +50,6 @@ class Movies extends Component {
       selectedGenre,
       movies: allMovies,
     } = this.state;
-
-    if (count === 0) return <p>No Movies Found</p>;
-
     const filtered =
       selectedGenre && selectedGenre._id
         ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
@@ -62,6 +58,18 @@ class Movies extends Component {
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
     const movies = paginate(sorted, currentPage, pageSize);
+
+    return { totalCount: filtered.length, data: movies };
+  };
+
+  render() {
+    const { length: count } = this.state.movies;
+    const { pageSize, currentPage, sortColumn } = this.state;
+
+    if (count === 0) return <p>No Movies Found</p>;
+
+    const { totalCount, data: movies } = this.getPagedData();
+
     return (
       <div className="row">
         <div className="col-3">
@@ -72,7 +80,7 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <p>Showing {filtered.length} movies available</p>
+          <p>Showing {totalCount} movies available</p>
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}
@@ -82,7 +90,7 @@ class Movies extends Component {
           />
 
           <Pagination
-            itemsCount={filtered.length}
+            itemsCount={totalCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
