@@ -1,15 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import _ from "lodash";
 
-class  extends Component {
-    state = {  } 
-    render() { 
-        const { data, columns } = this.props;
-        return <tbody>
-            {data.map(item => {<tr>
-                {columns.map(column => <td></td>)}
-            </tr>})}
-        </tbody>;
-    }
+class TableBody extends Component {
+  renderCell = (item, column) => {
+    if (column.content) return column.content(item);
+    return _.get(item, column.path);
+  };
+  state = {};
+  render() {
+    const { data, columns } = this.props;
+
+    return (
+      <tbody>
+        {data.map((item) => (
+          <tr>
+            {columns.map((column) => (
+              <td>{this.renderCell(item, column)}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    );
+  }
 }
- 
-export default ;
+
+export default TableBody;
