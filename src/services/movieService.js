@@ -1,7 +1,7 @@
 import http from "./httpService";
-import { apiUrl } from "../config.json";
+import config from "../config.json";
 
-const apiEndpoint = apiUrl + "/movies";
+const apiEndpoint = config.apiUrl + "/movies";
 
 export function getMovies() {
   return http.get(apiEndpoint);
