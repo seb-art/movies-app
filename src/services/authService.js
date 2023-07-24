@@ -3,7 +3,7 @@ import http from "./httpService";
 import config from "../config.json";
 
 const apiEndpoint = config.apiUrl + "/auth";
-tokenKey = "token";
+const tokenKey = "token";
 
 export async function login(email, password) {
   const { data: jwt } = await http.post(apiEndpoint, { email, password });
